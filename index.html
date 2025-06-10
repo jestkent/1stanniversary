@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matcha Love Catcher</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #e8f5e8, #c8e6c9);
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .game-container {
+            width: 800px;
+            height: 600px;
+            background: linear-gradient(to bottom, #f1f8e9, #dcedc8);
+            border: 3px solid #4caf50;
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .game-header {
+            text-align: center;
+            padding: 15px;
+            background: linear-gradient(45deg, #81c784, #4caf50);
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .score-board {
+            position: absolute;
+            top: 80px;
+            left: 20px;
+            right: 20px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 18px;
+            font-weight: bold;
+            color: #2e7d32;
+        }
+
+        .catcher {
+            position: absolute;
+            bottom: 20px;
+            width: 100px;
+            height: 60px;
+            background: linear-gradient(45deg, #ff69b4, #ff1493);
+            border-radius: 50px;
+            border: 3px solid #fff;
+            transition: left 0.1s ease;
+            box-shadow: 0 5px 15px rgba(255,105,180,0.4);
+        }
+
+        .catcher::before {
+            content: "💕";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 24px;
+        }
+
+        .falling-item {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            font-size: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.8);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            animation: sparkle 1s infinite alternate;
+        }
+
+        @keyframes sparkle {
+            0% { transform: scale(1) rotate(0deg); }
+            100% { transform: scale(1.1) rotate(10deg); }
+        }
+
+        .love-message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255,255,255,0.95);
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            font-size: 18px;
+            color: #2e7d32;
+            display: none;
+        }
+
+        .start-screen {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            background: rgba(255,255,255,0.9);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .start-button {
+            background: linear-gradient(45deg, #4caf50, #81c784);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            border-radius: 25px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .start-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(76,175,80,0.4);
+        }
+
+        .hearts {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .heart {
+            position: absolute;
+            color: #ff69b4;
+            font-size: 20px;
+            animation: floatUp 2s ease-out forwards;
+        }
+
+        @keyframes floatUp {
+            0% { opacity: 1; transform: translateY(0) scale(1); }
+            100% { opacity: 0; transform: translateY(-100px) scale(1.5); }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="game-header">
+            💚 Matcha Love Catcher 💚
+        </div>
+        
+        <div class="score-board">
+            <div>Score: <span id="score">0</span></div>
+            <div>Level: <span id="level">1</span></div>
+            <div>Lives: <span id="lives">3</span></div>
+        </div>
+
+        <div class="start-screen" id="startScreen">
+            <h2 style="color: #4caf50; margin-bottom: 20px;">🍵 Catch the Matcha Love! 🍵</h2>
+            <p style="color: #666; line-height: 1.6;">
+                Use ← → arrow keys to move<br>
+                Catch matcha items to score points!<br>
+                Avoid the bitter coffee ☕<br>
+                <strong>Made with love for you! 💕</strong><br>
+                <small style="color: #999;">🔊 Click start to enable sound</small>
+            </p>
+            <button class="start-button" onclick="startGame()">Start Playing</button>
+        </div>
+
+        <div class="love-message" id="loveMessage">
+            <h3 style="color: #ff69b4;">💕 Sweet Message 💕</h3>
+            <p id="messageText"></p>
+            <button class="start-button" onclick="continueGame()">Continue</button>
+        </div>
+
+        <div class="catcher" id="catcher"></div>
+        <div class="hearts" id="hearts"></div>
+    </div>
+
+    <script>
+        let gameActive = false;
+        let score = 0;
+        let level = 1;
+        let lives = 3;
+        let catcherPosition = 350;
+        let fallingItems = [];
+        let gameSpeed = 2;
+        let itemSpawnRate = 0.98;
+        let audioContext;
+        let backgroundMusic;
+
+        // Initialize audio
+        function initAudio() {
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            startBackgroundMusic();
+        }
+
+        // Create background music (soft cafe-style melody)
+        function startBackgroundMusic() {
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.setValueAtTime(220, audioContext.currentTime);
+            gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+            
+            oscillator.type = 'sine';
+            oscillator.start();
+            
+            // Create a gentle melody pattern
+            const notes = [220, 247, 262, 294, 330, 294, 262, 247];
+            let noteIndex = 0;
+            
+            setInterval(() => {
+                if (gameActive) {
+                    oscillator.frequency.setValueAtTime(notes[noteIndex], audioContext.currentTime);
+                    noteIndex = (noteIndex + 1) % notes.length;
+                }
+            }, 2000);
+            
+            backgroundMusic = { oscillator, gainNode };
+        }
+
+        // Sound effect functions
+        function playSound(frequency, duration, type = 'sine', volume = 0.3) {
+            if (!audioContext) return;
+            
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
+            oscillator.type = type;
+            
+            gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+            gainNode.gain.linearRampToValueAtTime(volume, audioContext.currentTime + 0.01);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + duration);
+        }
+
+        function playCatchSound() {
+            // Pleasant ding sound for catching matcha
+            playSound(800, 0.2, 'sine', 0.2);
+            setTimeout(() => playSound(1000, 0.1, 'sine', 0.15), 100);
+        }
+
+        function playBadSound() {
+            // Subtle negative sound for bad items
+            playSound(200, 0.3, 'sawtooth', 0.1);
+        }
+
+        function playLevelUpSound() {
+            // Celebratory sound for level up
+            playSound(523, 0.2, 'sine', 0.2);
+            setTimeout(() => playSound(659, 0.2, 'sine', 0.2), 200);
+            setTimeout(() => playSound(784, 0.3, 'sine', 0.2), 400);
+        }
+
+        function playGameOverSound() {
+            // Gentle game over sound
+            playSound(400, 0.5, 'sine', 0.15);
+            setTimeout(() => playSound(300, 0.5, 'sine', 0.15), 500);
+        }
+
+        const matcha_items = ['🍵', '🧋', '🍃', '🍰', '🧁', '🍪', '🍦', '🥛'];
+        const bad_items = ['☕', '🥤'];
+        
+        const loveMessages = [
+            "You're as sweet as matcha cake! 🍰",
+            "Every day with you is like a perfect cup of matcha! 🍵",
+            "You make my heart green with happiness! 💚",
+            "Just like matcha, you bring zen to my life! 🧘‍♀️",
+            "You're the perfect blend of sweet and amazing! 🧋",
+            "I love you more than matcha ice cream! 🍦",
+            "You're my favorite flavor in life! 💕",
+            "Together we're the perfect matcha latte! ☕💕"
+        ];
+
+        const catcher = document.getElementById('catcher');
+        const startScreen = document.getElementById('startScreen');
+        const loveMessage = document.getElementById('loveMessage');
+        const hearts = document.getElementById('hearts');
+
+        function startGame() {
+            startScreen.style.display = 'none';
+            initAudio();
+            gameActive = true;
+            gameLoop();
+        }
+
+        function continueGame() {
+            loveMessage.style.display = 'none';
+            gameActive = true;
+        }
+
+        function showLoveMessage() {
+            gameActive = false;
+            const messageText = document.getElementById('messageText');
+            const randomMessage = loveMessages[Math.floor(Math.random() * loveMessages.length)];
+            messageText.textContent = randomMessage;
+            loveMessage.style.display = 'block';
+            createHearts();
+        }
+
+        function createHearts() {
+            for (let i = 0; i < 10; i++) {
+                setTimeout(() => {
+                    const heart = document.createElement('div');
+                    heart.className = 'heart';
+                    heart.textContent = '💕';
+                    heart.style.left = Math.random() * 760 + 'px';
+                    heart.style.top = '500px';
+                    hearts.appendChild(heart);
+                    
+                    setTimeout(() => {
+                        heart.remove();
+                    }, 2000);
+                }, i * 200);
+            }
+        }
+
+        function updateScore() {
+            document.getElementById('score').textContent = score;
+            document.getElementById('level').textContent = level;
+            document.getElementById('lives').textContent = lives;
+        }
+
+        function spawnItem() {
+            if (!gameActive) return;
+            
+            const item = document.createElement('div');
+            item.className = 'falling-item';
+            
+            const isGood = Math.random() > 0.2;
+            if (isGood) {
+                item.textContent = matcha_items[Math.floor(Math.random() * matcha_items.length)];
+                item.dataset.type = 'good';
+            } else {
+                item.textContent = bad_items[Math.floor(Math.random() * bad_items.length)];
+                item.dataset.type = 'bad';
+            }
+            
+            item.style.left = Math.random() * 750 + 'px';
+            item.style.top = '120px';
+            document.querySelector('.game-container').appendChild(item);
+            
+            fallingItems.push({
+                element: item,
+                x: parseFloat(item.style.left),
+                y: 120
+            });
+        }
+
+        function updateItems() {
+            fallingItems.forEach((item, index) => {
+                item.y += gameSpeed;
+                item.element.style.top = item.y + 'px';
+                
+                // Check collision with catcher
+                if (item.y > 520 && item.y < 560 && 
+                    item.x > catcherPosition - 20 && item.x < catcherPosition + 120) {
+                    
+                    if (item.element.dataset.type === 'good') {
+                        score += 10;
+                        playCatchSound();
+                        if (score % 100 === 0) {
+                            level++;
+                            gameSpeed += 0.5;
+                            itemSpawnRate -= 0.01;
+                            playLevelUpSound();
+                            showLoveMessage();
+                        }
+                    } else {
+                        lives--;
+                        playBadSound();
+                        if (lives <= 0) {
+                            gameOver();
+                            return;
+                        }
+                    }
+                    
+                    item.element.remove();
+                    fallingItems.splice(index, 1);
+                    updateScore();
+                }
+                
+                // Remove items that fell off screen
+                if (item.y > 600) {
+                    item.element.remove();
+                    fallingItems.splice(index, 1);
+                }
+            });
+        }
+
+        function gameOver() {
+            gameActive = false;
+            playGameOverSound();
+            setTimeout(() => {
+                alert(`Game Over! 💔\nFinal Score: ${score}\nYou caught ${Math.floor(score/10)} matcha items!\n\nMade with love for you! 💕`);
+                location.reload();
+            }, 1000);
+        }
+
+        function gameLoop() {
+            if (!gameActive) return;
+            
+            if (Math.random() > itemSpawnRate) {
+                spawnItem();
+            }
+            
+            updateItems();
+            updateScore();
+            
+            requestAnimationFrame(gameLoop);
+        }
+
+        // Controls
+        document.addEventListener('keydown', (e) => {
+            if (!gameActive) return;
+            
+            if (e.key === 'ArrowLeft' && catcherPosition > 0) {
+                catcherPosition -= 20;
+            } else if (e.key === 'ArrowRight' && catcherPosition < 700) {
+                catcherPosition += 20;
+            }
+            
+            catcher.style.left = catcherPosition + 'px';
+        });
+
+        // Initialize catcher position
+        catcher.style.left = catcherPosition + 'px';
+        updateScore();
+    </script>
+</body>
+</html>
