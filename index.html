@@ -16,6 +16,125 @@
             overflow-x: hidden;
             position: relative;
         }
+        
+        /* --- NEW: Login Screen Styles --- */
+        #login-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #000;
+            transition: opacity 1s ease-out;
+        }
+
+        #stars-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 5s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.5; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        #login-form {
+            position: relative;
+            z-index: 2;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            text-align: center;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
+            20%, 40%, 60%, 80% { transform: translateX(10px); }
+        }
+
+        .shake {
+            animation: shake 0.5s ease-in-out;
+        }
+
+        #login-form h2 {
+            color: white;
+            font-size: 2rem;
+            margin-bottom: 25px;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            color: white;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .input-group input:focus {
+            border-color: #fd79a8;
+            box-shadow: 0 0 15px rgba(253, 121, 168, 0.5);
+        }
+
+        #login-btn {
+            width: 100%;
+            padding: 15px;
+            border-radius: 10px;
+            border: none;
+            background: linear-gradient(145deg, #fd79a8, #e84393);
+            color: white;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        #login-btn:hover {
+            box-shadow: 0 0 20px rgba(232, 67, 147, 0.7);
+            transform: translateY(-2px);
+        }
+
+        #error-message {
+            color: #ff6b6b;
+            margin-top: 15px;
+            height: 20px;
+            font-weight: bold;
+        }
+
+        #main-content {
+            display: none; /* Hidden by default */
+        }
+        /* --- End of Login Styles --- */
+        
 
         /* Floating animations */
         .heart {
@@ -208,84 +327,150 @@
     </style>
 </head>
 <body>
-    <div class="heart" style="left: 10%; animation-delay: 0s;">💛</div>
-    <div class="heart" style="left: 20%; animation-delay: 1s;">💖</div>
-    <div class="heart" style="left: 30%; animation-delay: 2s;">💛</div>
-    <div class="heart" style="left: 40%; animation-delay: 3s;">💕</div>
-    <div class="heart" style="left: 50%; animation-delay: 4s;">💛</div>
-    <div class="heart" style="left: 60%; animation-delay: 5s;">💖</div>
-    <div class="heart" style="left: 70%; animation-delay: 0.5s;">💛</div>
-    <div class="heart" style="left: 80%; animation-delay: 1.5s;">💕</div>
-    <div class="heart" style="left: 90%; animation-delay: 2.5s;">💛</div>
 
-    <div class="sparkle" style="top: 20%; left: 15%; animation-delay: 0s;">✨</div>
-    <div class="sparkle" style="top: 30%; left: 85%; animation-delay: 1s;">⭐</div>
-    <div class="sparkle" style="top: 60%; left: 25%; animation-delay: 2s;">✨</div>
-    <div class="sparkle" style="top: 80%; left: 75%; animation-delay: 1.5s;">⭐</div>
+    <div id="login-overlay">
+        <div id="stars-container"></div>
+        <form id="login-form">
+            <h2>A Special Place</h2>
+            <div class="input-group">
+                <input type="text" id="username" placeholder="Username" required>
+            </div>
+            <div class="input-group">
+                <input type="password" id="password" placeholder="Password" required>
+            </div>
+            <button type="submit" id="login-btn">Enter</button>
+            <p id="error-message"></p>
+        </form>
+    </div>
 
-    <div class="container">
-        <header class="header">
-            <h1>Games for My Love</h1>
-            <p>A sweet collection of games made with love 💛</p>
-        </header>
+    <div id="main-content">
+        <div class="heart" style="left: 10%; animation-delay: 0s;">💛</div>
+        <div class="heart" style="left: 20%; animation-delay: 1s;">💖</div>
+        <div class="heart" style="left: 30%; animation-delay: 2s;">💛</div>
+        <div class="heart" style="left: 40%; animation-delay: 3s;">💕</div>
+        <div class="heart" style="left: 50%; animation-delay: 4s;">💛</div>
+        <div class="heart" style="left: 60%; animation-delay: 5s;">💖</div>
+        <div class="heart" style="left: 70%; animation-delay: 0.5s;">💛</div>
+        <div class="heart" style="left: 80%; animation-delay: 1.5s;">💕</div>
+        <div class="heart" style="left: 90%; animation-delay: 2.5s;">💛</div>
 
-        <div class="games-grid">
-            <div class="game-card">
-                <span class="game-icon">🎯</span>
-                <h3>Matcha Game</h3>
-                <p>Our special matching game filled with love and sweet memories!</p>
-                <button class="play-btn" onclick="playGame(event, 'matchagame.html')">Play Now</button>
+        <div class="sparkle" style="top: 20%; left: 15%; animation-delay: 0s;">✨</div>
+        <div class="sparkle" style="top: 30%; left: 85%; animation-delay: 1s;">⭐</div>
+        <div class="sparkle" style="top: 60%; left: 25%; animation-delay: 2s;">✨</div>
+        <div class="sparkle" style="top: 80%; left: 75%; animation-delay: 1.5s;">⭐</div>
+
+        <div class="container">
+            <header class="header">
+                <h1>Games for My Love</h1>
+                <p>A sweet collection of games made with love 💛</p>
+            </header>
+
+            <div class="games-grid">
+                <div class="game-card">
+                    <span class="game-icon">🎯</span>
+                    <h3>Matcha Game</h3>
+                    <p>Our special matching game filled with love and sweet memories!</p>
+                    <button class="play-btn" onclick="playGame(event, 'matchagame.html')">Play Now</button>
+                </div>
+                <div class="game-card">
+                    <span class="game-icon">🧩</span>
+                    <h3>Game 2</h3>
+                    <p>Another wonderful adventure waiting for us to explore together!</p>
+                    <button class="play-btn" onclick="playGame(event, 'game2.html')">Play Now</button>
+                </div>
+                <div class="game-card">
+                    <span class="game-icon">🎲</span>
+                    <h3>Game 3</h3>
+                    <p>Fun challenges and sweet moments await in this exciting game!</p>
+                    <button class="play-btn" onclick="playGame(event, 'game3.html')">Play Now</button>
+                </div>
+                <div class="game-card">
+                    <span class="game-icon">🌟</span>
+                    <h3>Game 4</h3>
+                    <p>Magical gameplay designed to bring smiles and joy to your day!</p>
+                    <button class="play-btn" onclick="playGame(event, 'game4.html')">Play Now</button>
+                </div>
+                <div class="game-card">
+                    <span class="game-icon">💝</span>
+                    <h3>Game 5</h3>
+                    <p>The ultimate love-filled gaming experience crafted just for you!</p>
+                    <button class="play-btn" onclick="playGame(event, 'game5.html')">Play Now</button>
+                </div>
+                <div class="game-card">
+                    <span class="game-icon">💌</span>
+                    <h3>Game 6</h3>
+                    <p>A brand new journey begins here, filled with more surprises!</p>
+                    <button class="play-btn" onclick="playGame(event, 'game6.html')">Play Now</button>
+                </div>
             </div>
 
-            <div class="game-card">
-                <span class="game-icon">🧩</span>
-                <h3>Game 2</h3>
-                <p>Another wonderful adventure waiting for us to explore together!</p>
-                <button class="play-btn" onclick="playGame(event, 'game2.html')">Play Now</button>
-            </div>
-
-            <div class="game-card">
-                <span class="game-icon">🎲</span>
-                <h3>Game 3</h3>
-                <p>Fun challenges and sweet moments await in this exciting game!</p>
-                <button class="play-btn" onclick="playGame(event, 'game3.html')">Play Now</button>
-            </div>
-
-            <div class="game-card">
-                <span class="game-icon">🌟</span>
-                <h3>Game 4</h3>
-                <p>Magical gameplay designed to bring smiles and joy to your day!</p>
-                <button class="play-btn" onclick="playGame(event, 'game4.html')">Play Now</button>
-            </div>
-
-            <div class="game-card">
-                <span class="game-icon">💝</span>
-                <h3>Game 5</h3>
-                <p>The ultimate love-filled gaming experience crafted just for you!</p>
-                <button class="play-btn" onclick="playGame(event, 'game5.html')">Play Now</button>
-            </div>
-            
-            <div class="game-card">
-                <span class="game-icon">💌</span>
-                <h3>Game 6</h3>
-                <p>A brand new journey begins here, filled with more surprises!</p>
-                <button class="play-btn" onclick="playGame(event, 'game6.html')">Play Now</button>
-            </div>
+            <footer class="footer">
+                <p>Made with endless love and lots of code 💛✨</p>
+            </footer>
         </div>
-
-        <footer class="footer">
-            <p>Made with endless love and lots of code 💛✨</p>
-        </footer>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // --- NEW: Login Logic ---
+            const loginOverlay = document.getElementById('login-overlay');
+            const loginForm = document.getElementById('login-form');
+            const usernameInput = document.getElementById('username');
+            const passwordInput = document.getElementById('password');
+            const errorMessage = document.getElementById('error-message');
+            const mainContent = document.getElementById('main-content');
+            const starsContainer = document.getElementById('stars-container');
+
+            // Generate stars for the background
+            for (let i = 0; i < 150; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                const size = Math.random() * 3;
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+                star.style.top = `${Math.random() * 100}%`;
+                star.style.left = `${Math.random() * 100}%`;
+                star.style.animationDelay = `${Math.random() * 5}s`;
+                starsContainer.appendChild(star);
+            }
+
+            loginForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                errorMessage.textContent = '';
+                loginForm.classList.remove('shake');
+                
+                // IMPORTANT: These are the credentials for the login.
+                // This is for demonstration only and is not secure.
+                const correctUsername = 'love';
+                const correctPassword = 'you';
+
+                if (usernameInput.value === correctUsername && passwordInput.value === correctPassword) {
+                    // Successful login
+                    loginOverlay.style.opacity = '0';
+                    setTimeout(() => {
+                        loginOverlay.style.display = 'none';
+                        mainContent.style.display = 'block';
+                        
+                        // Start the main content animations and music now
+                        initializeMainContent();
+                    }, 1000); // Match the transition duration
+                } else {
+                    // Failed login
+                    errorMessage.textContent = 'Incorrect details. Try a special word!';
+                    loginForm.classList.add('shake');
+                }
+            });
+            // --- End of Login Logic ---
+        });
+
+        function initializeMainContent() {
             // Start floating hearts every 3 seconds
             setInterval(createFloatingHeart, 3000);
             
-            // Auto-start music when page loads - Note: this may be blocked by browsers
-            // The click handler provides a more reliable way to start audio.
+            // Auto-start music
             setTimeout(() => {
+                // Ensure Tone.js context is started
+                Tone.start();
                 const synth = new Tone.PolySynth(Tone.Synth, {
                     oscillator: { type: "fatsine" },
                     envelope: { attack: 0.5, decay: 0.1, sustain: 0.3, release: 1 }
@@ -298,7 +483,7 @@
                 Tone.Transport.start();
                 melody.start(0);
             }, 500);
-        });
+        }
 
         function playGame(event, gameFile) {
             // Start the music on the first interaction, which is more reliable
@@ -310,17 +495,12 @@
             btn.style.background = 'linear-gradient(145deg, #fdcb6e, #e17055)';
             
             setTimeout(() => {
-                // This is the key change: it now navigates to the game file
                 window.location.href = gameFile;
-
-                // This code might not run if the page navigates away quickly,
-                // but it's good practice to have it in case of a slow load.
                 setTimeout(() => {
                     btn.innerHTML = 'Play Now';
                     btn.disabled = false;
                     btn.style.background = 'linear-gradient(145deg, #fd79a8, #e84393)';
-                }, 1500); // Give it a bit more time
-                
+                }, 1500);
             }, 800);
         }
 
@@ -331,14 +511,14 @@
             heart.style.left = Math.random() * 100 + '%';
             heart.style.animationDelay = '0s';
             heart.style.animationDuration = (Math.random() * 3 + 4) + 's';
-            document.body.appendChild(heart);
+            document.getElementById('main-content').appendChild(heart);
             setTimeout(() => {
                 heart.remove();
             }, 7000);
         }
 
         document.addEventListener('mousemove', (e) => {
-            if (Math.random() > 0.95) {
+            if (Math.random() > 0.95 && mainContent.style.display === 'block') {
                 const sparkle = document.createElement('div');
                 sparkle.className = 'sparkle';
                 sparkle.innerHTML = '✨';
@@ -355,8 +535,7 @@
         });
 
         document.addEventListener('click', (e) => {
-            // Avoid ripple on game buttons
-            if (e.target.classList.contains('play-btn')) {
+            if (mainContent.style.display !== 'block' || e.target.classList.contains('play-btn')) {
                 return;
             }
             const ripple = document.createElement('div');
