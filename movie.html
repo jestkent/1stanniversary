@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie of Us - Cinema Experience</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cinzel:wght@400;600&family=Inter:wght@300;400;500&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0a0a0a;
+            overflow-x: hidden;
+            color: white;
+            cursor: none;
+        }
+        
+        .custom-cursor {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            background: radial-gradient(circle, #ff6b6b, #ff4757);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transition: transform 0.1s ease;
+            box-shadow: 0 0 20px rgba(255, 107, 107, 0.5);
+        }
+        
+        .theater-container {
+            position: relative;
+            height: 100vh;
+            background: linear-gradient(180deg, #1a1a1a 0%, #000 100%);
+            overflow: hidden;
+        }
+        
+        .theater-lights {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(ellipse at 20% 10%, rgba(255, 215, 0, 0.1) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 10%, rgba(255, 215, 0, 0.1) 0%, transparent 50%);
+            z-index: 1;
+        }
+        
+        .screen-frame {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -60%);
+            width: 80vw;
+            max-width: 1200px;
+            height: 50vh;
+            background: linear-gradient(45deg, #2c2c2c, #1a1a1a);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 
+                0 0 50px rgba(0, 0, 0, 0.8),
+                inset 0 0 20px rgba(255, 255, 255, 0.1);
+            z-index: 2;
+            border: 3px solid #444;
+        }
+        
+        .screen {
+            width: 100%;
+            height: 100%;
+            background: #000;
+            border-radius: 15px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.9);
+        }
+        
+        .screen::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                linear-gradient(45deg, transparent 49%, rgba(255, 255, 255, 0.02) 50%, transparent 51%),
+                linear-gradient(-45deg, transparent 49%, rgba(255, 255, 255, 0.02) 50%, transparent 51%);
+            background-size: 20px 20px;
+            pointer-events: none;
+        }
+        
+        .play-button-container {
+            position: relative;
+            z-index: 3;
+        }
+        
+        .play-button {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff6b6b, #ff4757);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            transition: all 0.3s ease;
+            box-shadow: 
+                0 10px 30px rgba(255, 107, 107, 0.4),
+                0 0 0 0 rgba(255, 107, 107, 0.7);
+            animation: pulse 2s infinite;
+        }
+        
+        .play-button:hover {
+            transform: scale(1.1);
+            box-shadow: 
+                0 15px 40px rgba(255, 107, 107, 0.6),
+                0 0 0 20px rgba(255, 107, 107, 0);
+        }
+        
+        .play-icon {
+            width: 0;
+            height: 0;
+            border-left: 30px solid white;
+            border-top: 20px solid transparent;
+            border-bottom: 20px solid transparent;
+            margin-left: 8px;
+        }
+        
+        .movie-title {
+            position: absolute;
+            bottom: 15%;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            z-index: 3;
+        }
+        
+        .title-main {
+            font-family: 'Cinzel', serif;
+            font-size: clamp(3rem, 8vw, 6rem);
+            font-weight: 600;
+            color: #fff;
+            text-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
+            margin-bottom: 1rem;
+            letter-spacing: 3px;
+            animation: glow 3s ease-in-out infinite alternate;
+        }
+        
+        .title-subtitle {
+            font-family: 'Bebas Neue', cursive;
+            font-size: clamp(1rem, 3vw, 2rem);
+            color: #ff6b6b;
+            letter-spacing: 8px;
+            text-transform: uppercase;
+            opacity: 0.9;
+        }
+        
+        .theater-seats {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(0deg, #000 0%, transparent 100%);
+            z-index: 1;
+        }
+        
+        .seats-row {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+        }
+        
+        .seat {
+            width: 30px;
+            height: 40px;
+            background: linear-gradient(180deg, #333, #222);
+            border-radius: 8px 8px 20px 20px;
+            position: relative;
+            opacity: 0.6;
+        }
+        
+        .seat::before {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: 2px;
+            right: 2px;
+            height: 15px;
+            background: linear-gradient(180deg, #444, #333);
+            border-radius: 12px 12px 0 0;
+        }
+        
+        .spotlight {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 100vh;
+            background: linear-gradient(180deg, 
+                rgba(255, 255, 255, 0.1) 0%, 
+                rgba(255, 255, 255, 0.05) 30%, 
+                transparent 60%);
+            pointer-events: none;
+            z-index: 1;
+            animation: spotlightSway 6s ease-in-out infinite alternate;
+        }
+        
+        .curtains {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 4;
+            pointer-events: none;
+        }
+        
+        .curtain-left, .curtain-right {
+            position: absolute;
+            top: 0;
+            width: 15%;
+            height: 100%;
+            background: linear-gradient(90deg, #8B0000, #660000);
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
+            transition: transform 1s ease-in-out;
+        }
+        
+        .curtain-left {
+            left: 0;
+            background: linear-gradient(90deg, #8B0000, #660000);
+            transform: translateX(-100%);
+        }
+        
+        .curtain-right {
+            right: 0;
+            background: linear-gradient(-90deg, #8B0000, #660000);
+            transform: translateX(100%);
+        }
+        
+        .curtains.closed .curtain-left {
+            transform: translateX(0);
+        }
+        
+        .curtains.closed .curtain-right {
+            transform: translateX(0);
+        }
+        
+        .video-player {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .video-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .main-video {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        
+        .video-controls {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 15px 30px;
+            border-radius: 50px;
+            backdrop-filter: blur(10px);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .video-player:hover .video-controls {
+            opacity: 1;
+        }
+        
+        .control-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+        
+        .control-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+        
+        .close-btn {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            background: rgba(0, 0, 0, 0.7);
+            border: none;
+            color: white;
+            font-size: 30px;
+            cursor: pointer;
+            padding: 15px;
+            border-radius: 50%;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        
+        .close-btn:hover {
+            background: rgba(255, 107, 107, 0.8);
+            transform: scale(1.1);
+        }
+        
+        .countdown {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 8rem;
+            font-family: 'Bebas Neue', cursive;
+            color: #ff6b6b;
+            z-index: 5;
+            opacity: 0;
+            text-shadow: 0 0 50px rgba(255, 107, 107, 0.8);
+        }
+        
+        .popcorn {
+            position: absolute;
+            font-size: 20px;
+            animation: fall 4s linear infinite;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 10px 30px rgba(255, 107, 107, 0.4), 0 0 0 0 rgba(255, 107, 107, 0.7); }
+            70% { box-shadow: 0 10px 30px rgba(255, 107, 107, 0.4), 0 0 0 10px rgba(255, 107, 107, 0); }
+            100% { box-shadow: 0 10px 30px rgba(255, 107, 107, 0.4), 0 0 0 0 rgba(255, 107, 107, 0); }
+        }
+        
+        @keyframes glow {
+            from { text-shadow: 0 0 30px rgba(255, 255, 255, 0.5); }
+            to { text-shadow: 0 0 40px rgba(255, 255, 255, 0.8), 0 0 60px rgba(255, 107, 107, 0.3); }
+        }
+        
+        @keyframes spotlightSway {
+            0% { transform: translateX(-50%) rotate(-1deg); }
+            100% { transform: translateX(-50%) rotate(1deg); }
+        }
+        
+        @keyframes fall {
+            0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+        }
+        
+        @keyframes countdownPulse {
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+            50% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
+        }
+        
+        @media (max-width: 768px) {
+            .screen-frame {
+                width: 90vw;
+                height: 40vh;
+            }
+            
+            .play-button {
+                width: 80px;
+                height: 80px;
+            }
+            
+            .play-icon {
+                border-left: 20px solid white;
+                border-top: 15px solid transparent;
+                border-bottom: 15px solid transparent;
+                margin-left: 5px;
+            }
+            
+            .title-main {
+                font-size: 2.5rem;
+                letter-spacing: 1px;
+            }
+            
+            .title-subtitle {
+                font-size: 1rem;
+                letter-spacing: 4px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="custom-cursor"></div>
+    
+    <div class="theater-container">
+        <div class="theater-lights"></div>
+        <div class="spotlight"></div>
+        
+        <div class="screen-frame">
+            <div class="screen">
+                <div class="play-button-container">
+                    <button class="play-button" id="playBtn">
+                        <div class="play-icon"></div>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="movie-title">
+            <h1 class="title-main">MOVIE OF US</h1>
+            <p class="title-subtitle">A Love Story</p>
+        </div>
+        
+        <div class="theater-seats">
+            <div class="seats-row">
+                <div class="seat"></div>
+                <div class="seat"></div>
+                <div class="seat"></div>
+                <div class="seat"></div>
+                <div class="seat"></div>
+                <div class="seat"></div>
+                <div class="seat"></div>
+                <div class="seat"></div>
+                <div class="seat"></div>
+                <div class="seat"></div>
+            </div>
+        </div>
+        
+        <div class="curtains" id="curtains">
+            <div class="curtain-left"></div>
+            <div class="curtain-right"></div>
+        </div>
+        
+        <div class="countdown" id="countdown"></div>
+    </div>
+    
+    <div class="video-player" id="videoPlayer">
+        <button class="close-btn" id="closeBtn">×</button>
+        <div class="video-container">
+            <video class="main-video" id="mainVideo" controls>
+                <source src="your-video.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <div class="video-controls">
+                <button class="control-btn" id="playPauseBtn">⏸️</button>
+                <button class="control-btn" id="muteBtn">🔊</button>
+                <button class="control-btn" id="fullscreenBtn">⛶</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Custom cursor
+        const cursor = document.querySelector('.custom-cursor');
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+        });
+        
+        // Theater elements
+        const playBtn = document.getElementById('playBtn');
+        const videoPlayer = document.getElementById('videoPlayer');
+        const mainVideo = document.getElementById('mainVideo');
+        const closeBtn = document.getElementById('closeBtn');
+        const curtains = document.getElementById('curtains');
+        const countdown = document.getElementById('countdown');
+        const playPauseBtn = document.getElementById('playPauseBtn');
+        const muteBtn = document.getElementById('muteBtn');
+        const fullscreenBtn = document.getElementById('fullscreenBtn');
+        
+        // Popcorn animation
+        function createPopcorn() {
+            const popcorn = document.createElement('div');
+            popcorn.className = 'popcorn';
+            popcorn.innerHTML = '🍿';
+            popcorn.style.left = Math.random() * 100 + 'vw';
+            popcorn.style.animationDuration = (Math.random() * 2 + 3) + 's';
+            document.body.appendChild(popcorn);
+            
+            setTimeout(() => {
+                popcorn.remove();
+            }, 5000);
+        }
+        
+        setInterval(createPopcorn, 2000);
+        
+        // Play button click
+        playBtn.addEventListener('click', () => {
+            // Close curtains
+            curtains.classList.add('closed');
+            
+            // Start countdown
+            let count = 3;
+            countdown.style.opacity = '1';
+            
+            const countdownInterval = setInterval(() => {
+                countdown.textContent = count;
+                countdown.style.animation = 'countdownPulse 1s ease-out';
+                
+                count--;
+                
+                if (count < 0) {
+                    clearInterval(countdownInterval);
+                    countdown.style.opacity = '0';
+                    
+                    // Open video player
+                    setTimeout(() => {
+                        videoPlayer.style.display = 'flex';
+                        mainVideo.play();
+                        document.body.style.cursor = 'auto';
+                    }, 200);
+                }
+                
+                setTimeout(() => {
+                    countdown.style.animation = 'none';
+                }, 1000);
+            }, 1000);
+        });
+        
+        // Close video
+        closeBtn.addEventListener('click', () => {
+            videoPlayer.style.display = 'none';
+            mainVideo.pause();
+            mainVideo.currentTime = 0;
+            curtains.classList.remove('closed');
+            document.body.style.cursor = 'none';
+        });
+        
+        // Video controls
+        playPauseBtn.addEventListener('click', () => {
+            if (mainVideo.paused) {
+                mainVideo.play();
+                playPauseBtn.textContent = '⏸️';
+            } else {
+                mainVideo.pause();
+                playPauseBtn.textContent = '▶️';
+            }
+        });
+        
+        muteBtn.addEventListener('click', () => {
+            mainVideo.muted = !mainVideo.muted;
+            muteBtn.textContent = mainVideo.muted ? '🔇' : '🔊';
+        });
+        
+        fullscreenBtn.addEventListener('click', () => {
+            if (document.fullscreenElement) {
+                document.exitFullscreen();
+            } else {
+                videoPlayer.requestFullscreen();
+            }
+        });
+        
+        // Update play/pause button based on video state
+        mainVideo.addEventListener('play', () => {
+            playPauseBtn.textContent = '⏸️';
+        });
+        
+        mainVideo.addEventListener('pause', () => {
+            playPauseBtn.textContent = '▶️';
+        });
+        
+        // Escape key to close video
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && videoPlayer.style.display === 'flex') {
+                closeBtn.click();
+            }
+        });
+        
+        // Ambient theater sounds (optional)
+        function playAmbientSound() {
+            // You can add ambient theater sounds here
+            // const audio = new Audio('theater-ambient.mp3');
+            // audio.volume = 0.1;
+            // audio.loop = true;
+            // audio.play();
+        }
+        
+        // Initialize
+        playAmbientSound();
+        
+        // Screen glare effect
+        const screen = document.querySelector('.screen');
+        screen.addEventListener('mousemove', (e) => {
+            const rect = screen.getBoundingClientRect();
+            const x = (e.clientX - rect.left) / rect.width;
+            const y = (e.clientY - rect.top) / rect.height;
+            
+            screen.style.background = `
+                radial-gradient(
+                    circle at ${x * 100}% ${y * 100}%, 
+                    rgba(255, 255, 255, 0.03) 0%, 
+                    transparent 50%
+                ), 
+                #000
+            `;
+        });
+        
+        screen.addEventListener('mouseleave', () => {
+            screen.style.background = '#000';
+        });
+    </script>
+</body>
+</html>
