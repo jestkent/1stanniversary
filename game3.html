@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Love Story</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
+
+    <style>
+        /* General Styling */
+        body {
+            background-color: #fdf8f5; /* A soft, warm background color */
+            color: #4a4a4a;
+            font-family: 'Quicksand', sans-serif;
+            margin: 0;
+        }
+
+        header, footer {
+            background-color: #d1a3a3; /* A muted rose color */
+            color: #fff;
+            text-align: center;
+            padding: 30px 20px;
+        }
+
+        header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            margin: 0;
+        }
+
+        header p {
+            font-size: 1.2rem;
+            margin: 10px 0 0;
+        }
+
+        footer p {
+            margin: 0;
+            font-style: italic;
+        }
+
+        /* The Timeline Itself */
+        .timeline {
+            position: relative;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 0;
+        }
+
+        /* The central line of the timeline */
+        .timeline::after {
+            content: '';
+            position: absolute;
+            width: 6px;
+            background-color: #d1a3a3;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            margin-left: -3px;
+            z-index: -1;
+        }
+
+        /* Container around content */
+        .timeline-container {
+            padding: 10px 40px;
+            position: relative;
+            background-color: inherit;
+            width: 50%;
+        }
+
+        /* The circles on the timeline */
+        .timeline-container::after {
+            content: '';
+            position: absolute;
+            width: 25px;
+            height: 25px;
+            right: -17px;
+            background-color: white;
+            border: 4px solid #c88484;
+            top: 15px;
+            border-radius: 50%;
+            z-index: 1;
+        }
+
+        /* Place containers to the left */
+        .left {
+            left: 0;
+        }
+
+        /* Place containers to the right */
+        .right {
+            left: 50%;
+        }
+
+        /* Add arrows to the left container (pointing right) */
+        .left::before {
+            content: " ";
+            height: 0;
+            position: absolute;
+            top: 22px;
+            width: 0;
+            z-index: 1;
+            right: 30px;
+            border: medium solid white;
+            border-width: 10px 0 10px 10px;
+            border-color: transparent transparent transparent white;
+        }
+
+        /* Add arrows to the right container (pointing left) */
+        .right::before {
+            content: " ";
+            height: 0;
+            position: absolute;
+            top: 22px;
+            width: 0;
+            z-index: 1;
+            left: 30px;
+            border: medium solid white;
+            border-width: 10px 10px 10px 0;
+            border-color: transparent white transparent transparent;
+        }
+
+        /* Fix the circle for right containers */
+        .right::after {
+            left: -16px;
+        }
+
+        /* The actual content card */
+        .content {
+            padding: 20px 30px;
+            background-color: white;
+            position: relative;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .content h2 {
+            font-family: 'Playfair Display', serif;
+            color: #c88484;
+            margin-top: 0;
+        }
+
+        .content small {
+            font-weight: 600;
+            color: #999;
+        }
+
+        .content img, .content iframe {
+            width: 100%;
+            height: auto;
+            margin-top: 15px;
+            border-radius: 4px;
+        }
+
+        /* Media queries - Responsive layout for smaller screens */
+        @media screen and (max-width: 768px) {
+            .timeline::after {
+                left: 31px;
+            }
+            .timeline-container {
+                width: 100%;
+                padding-left: 70px;
+                padding-right: 25px;
+            }
+            .timeline-container::before {
+                left: 60px;
+                border: medium solid white;
+                border-width: 10px 10px 10px 0;
+                border-color: transparent white transparent transparent;
+            }
+            .left::after, .right::after {
+                left: 15px;
+            }
+            .left, .right {
+                left: 0%;
+            }
+        }
+
+        /* Animation for revealing content on scroll */
+        .reveal {
+            position: relative;
+            opacity: 0;
+            transform: translateY(100px);
+            transition: all 1s ease;
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Our First Year</h1>
+        <p>A timeline of our beautiful journey together.</p>
+    </header>
+
+    <div class="timeline">
+
+        <div class="timeline-container left reveal">
+            <div class="content">
+                <h2>How We Met</h2>
+                <small>June 18, 2024</small>
+                <p>I remember seeing you for the first time and thinking... [Add your personal memory here]. It was the start of everything.</p>
+                <img src="https://via.placeholder.com/400x250.png?text=Our+First+Photo" alt="Memory 1">
+            </div>
+        </div>
+
+        <div class="timeline-container right reveal">
+            <div class="content">
+                <h2>Our First Date</h2>
+                <small>June 25, 2024</small>
+                <p>Our first date at [Place] was magical. I was so nervous, but you made me feel completely at ease. My favorite part was when [add a specific moment].</p>
+                <img src="https://via.placeholder.com/400x250.png?text=First+Date" alt="Memory 2">
+            </div>
+        </div>
+
+        <div class="timeline-container left reveal">
+            <div class="content">
+                <h2>The "Pineapple Incident"</h2>
+                <small>August 5, 2024</small>
+                <p>I will never forget [explain the inside joke here]. It still makes me laugh every time I think about it!</p>
+                </div>
+        </div>
+        
+        <div class="timeline-container right reveal">
+            <div class="content">
+                <h2>Our First Trip Together</h2>
+                <small>November 10-12, 2024</small>
+                <p>Exploring [City/Place] with you was a dream come true. From getting lost on our way to [Place] to watching the sunset at [Location], every moment was perfect.</p>
+                <img src="https://via.placeholder.com/400x250.png?text=Our+Trip" alt="Memory 4">
+            </div>
+        </div>
+        
+        </div>
+
+    <footer>
+        <p>Happy 1st Anniversary, my love. Here's to many more chapters in our story.</p>
+    </footer>
+
+    <script>
+        // This function will be called when the user scrolls
+        function reveal() {
+          var reveals = document.querySelectorAll(".reveal");
+
+          for (var i = 0; i < reveals.length; i++) {
+            var windowHeight = window.innerHeight;
+            var elementTop = reveals[i].getBoundingClientRect().top;
+            var elementVisible = 150; // Distance from the top of the viewport to start the animation
+
+            if (elementTop < windowHeight - elementVisible) {
+              reveals[i].classList.add("active");
+            } else {
+              reveals[i].classList.remove("active");
+            }
+          }
+        }
+
+        // Add an event listener to run the function every time the user scrolls
+        window.addEventListener("scroll", reveal);
+
+        // To reveal the first item on page load
+        reveal();
+    </script>
+</body>
+</html>
