@@ -344,6 +344,8 @@
     </div>
 
     <div id="main-content">
+        <button id="logout-btn" class="play-btn" style="position: fixed; top: 20px; right: 20px; z-index: 1000; padding: 10px 20px;">Logout</button>
+
         <div class="heart" style="left: 10%; animation-delay: 0s;">💛</div>
         <div class="heart" style="left: 20%; animation-delay: 1s;">💖</div>
         <div class="heart" style="left: 30%; animation-delay: 2s;">💛</div>
@@ -412,7 +414,6 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // --- NEW: Login Logic ---
             const loginOverlay = document.getElementById('login-overlay');
             const loginForm = document.getElementById('login-form');
             const usernameInput = document.getElementById('username');
@@ -420,8 +421,9 @@
             const errorMessage = document.getElementById('error-message');
             const mainContent = document.getElementById('main-content');
             const starsContainer = document.getElementById('stars-container');
+            const logoutBtn = document.getElementById('logout-btn'); // Get the logout button
 
-            // Generate stars for the background
+            // --- Star Generation for Login Overlay ---
             for (let i = 0; i < 150; i++) {
                 const star = document.createElement('div');
                 star.className = 'star';
@@ -434,24 +436,29 @@
                 starsContainer.appendChild(star);
             }
 
+            // --- Check Login State on Load ---
+            if (localStorage.getItem('loggedIn') === 'true') {
+                loginOverlay.style.display = 'none';
+                mainContent.style.display = 'block';
+                initializeMainContent();
+            }
+
+            // --- Login Form Submission ---
             loginForm.addEventListener('submit', (e) => {
                 e.preventDefault();
                 errorMessage.textContent = '';
                 loginForm.classList.remove('shake');
                 
-                // IMPORTANT: These are the credentials for the login.
-                // This is for demonstration only and is not secure.
                 const correctUsername = 'mylove';
                 const correctPassword = '070424';
 
                 if (usernameInput.value === correctUsername && passwordInput.value === correctPassword) {
                     // Successful login
+                    localStorage.setItem('loggedIn', 'true'); // Remember login
                     loginOverlay.style.opacity = '0';
                     setTimeout(() => {
                         loginOverlay.style.display = 'none';
                         mainContent.style.display = 'block';
-                        
-                        // Start the main content animations and music now
                         initializeMainContent();
                     }, 1000); // Match the transition duration
                 } else {
@@ -460,7 +467,14 @@
                     loginForm.classList.add('shake');
                 }
             });
-            // --- End of Login Logic ---
+
+            // --- Logout Functionality (Optional) ---
+            if (logoutBtn) { // Ensure the button exists before adding listener
+                logoutBtn.addEventListener('click', () => {
+                    localStorage.removeItem('loggedIn'); // Clear login state
+                    location.reload(); // Reload the page to show the login screen
+                });
+            }
         });
 
         function initializeMainContent() {
@@ -496,6 +510,8 @@
             
             setTimeout(() => {
                 window.location.href = gameFile;
+                // Note: The below will only execute if the page *doesn't* redirect.
+                // Since it does, this part is mostly for visual feedback before navigation.
                 setTimeout(() => {
                     btn.innerHTML = 'Play Now';
                     btn.disabled = false;
