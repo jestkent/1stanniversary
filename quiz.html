@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Master</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        /* Custom CSS for animations and font-family */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+
+        @keyframes slideInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-slide-in-up {
+            animation: slideInUp 0.6s ease-out forwards;
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in-down {
+            animation: fadeInDown 0.5s ease-out forwards;
+        }
+
+        @keyframes bounceOnce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            20% {
+                transform: translateY(-8px);
+            }
+            40% {
+                transform: translateY(0);
+            }
+            60% {
+                transform: translateY(-4px);
+            }
+            80% {
+                transform: translateY(0);
+            }
+        }
+        .animate-bounce-once {
+            animation: bounceOnce 0.8s ease-in-out;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-purple-600 to-blue-500 flex items-center justify-center p-4">
+
+    <div id="quiz-container" class="bg-white rounded-3xl shadow-2xl p-8 max-w-lg w-full text-center transform transition-all duration-500 hover:scale-105">
+        <h1 class="text-4xl font-extrabold mb-8 text-gray-800">
+            Quiz Master
+        </h1>
+
+        <div id="score-section" class="hidden">
+            <h2 id="final-score" class="text-3xl font-bold text-gray-700 mb-4 animate-fade-in">
+                You scored X out of Y!
+            </h2>
+            <button
+                id="restart-button"
+                class="bg-gradient-to-r from-green-400 to-green-600 text-white font-semibold py-3 px-8 rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-75"
+            >
+                Restart Quiz
+            </button>
+        </div>
+
+        <div id="quiz-content">
+            <div class="question-section mb-6">
+                <div id="question-count" class="text-lg text-gray-600 mb-2">
+                    Question 1/5
+                </div>
+                <div id="question-text" class="text-2xl font-semibold text-gray-800 animate-slide-in-up">
+                    Question will appear here.
+                </div>
+            </div>
+
+            <div id="answer-section" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                <!-- Answer buttons will be injected here by JavaScript -->
+            </div>
+
+            <div id="feedback-section" class="mb-6 text-lg font-bold hidden animate-fade-in-down">
+                <!-- Feedback will appear here by JavaScript -->
+            </div>
+
+            <button
+                id="next-button"
+                class="w-full py-3 px-8 rounded-full shadow-lg text-white font-semibold text-lg bg-gray-300 cursor-not-allowed"
+                disabled
+            >
+                Next Question
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const quizData = [
+            {
+                question: "What is the capital of France?",
+                options: ["Berlin", "Madrid", "Paris", "Rome"],
+                answer: "Paris",
+            },
+            {
+                question: "Which planet is known as the Red Planet?",
+                options: ["Earth", "Mars", "Jupiter", "Venus"],
+                answer: "Mars",
+            },
+            {
+                question: "What is 7 multiplied by 8?",
+                options: ["49", "56", "64", "72"],
+                answer: "56",
+            },
+            {
+                question: "What is the largest ocean on Earth?",
+                options: ["Atlantic", "Indian", "Arctic", "Pacific"],
+                answer: "Pacific",
+            },
+            {
+                question: "Who painted the Mona Lisa?",
+                options: ["Vincent van Gogh", "Pablo Picasso", "Leonardo da Vinci", "Claude Monet"],
+                answer: "Leonardo da Vinci",
+            },
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let selectedAnswer = null;
+        let feedback = null; // 'correct', 'incorrect', or null
+
+        // Get DOM elements
+        const scoreSection = document.getElementById('score-section');
+        const finalScoreText = document.getElementById('final-score');
+        const restartButton = document.getElementById('restart-button');
+        const quizContent = document.getElementById('quiz-content');
+        const questionCount = document.getElementById('question-count');
+        const questionText = document.getElementById('question-text');
+        const answerSection = document.getElementById('answer-section');
+        const feedbackSection = document.getElementById('feedback-section');
+        const nextButton = document.getElementById('next-button');
+
+        /**
+         * Loads the current question and its options into the UI.
+         */
+        function loadQuestion() {
+            // Reset feedback and selected answer for the new question
+            selectedAnswer = null;
+            feedback = null;
+            feedbackSection.classList.add('hidden'); // Hide feedback
+            nextButton.disabled = true; // Disable next button
+            nextButton.classList.add('bg-gray-300', 'cursor-not-allowed');
+            nextButton.classList.remove('bg-gradient-to-r', 'from-blue-500', 'to-indigo-600', 'hover:from-blue-600', 'hover:to-indigo-700', 'transform', 'hover:scale-105', 'transition', 'duration-300', 'ease-in-out', 'focus:outline-none', 'focus:ring-2', 'focus:ring-blue-500', 'focus:ring-opacity-75');
+
+
+            const currentQuestion = quizData[currentQuestionIndex];
+            questionCount.textContent = `Question ${currentQuestionIndex + 1}/${quizData.length}`;
+            questionText.textContent = currentQuestion.question;
+
+            // Clear previous options
+            answerSection.innerHTML = '';
+
+            // Create and append new option buttons
+            currentQuestion.options.forEach((option, index) => {
+                const button = document.createElement('button');
+                button.textContent = option;
+                button.classList.add(
+                    'w-full', 'py-3', 'px-6', 'rounded-xl', 'border-2',
+                    'text-lg', 'font-medium', 'transition', 'duration-300', 'ease-in-out',
+                    'bg-gray-100', 'border-gray-300', 'text-gray-700', 'hover:bg-gray-200', 'hover:border-blue-400',
+                    'transform', 'hover:scale-105', 'active:scale-95' // Add hover animation
+                );
+                button.setAttribute('data-option', option); // Store the option on the button
+                button.addEventListener('click', handleAnswerOptionClick);
+                answerSection.appendChild(button);
+            });
+        }
+
+        /**
+         * Handles the click event when an answer option is selected.
+         * @param {Event} event The click event.
+         */
+        function handleAnswerOptionClick(event) {
+            if (selectedAnswer !== null) return; // Prevent multiple selections
+
+            const clickedButton = event.target;
+            selectedAnswer = clickedButton.getAttribute('data-option');
+            const currentQuestion = quizData[currentQuestionIndex];
+
+            // Disable all option buttons after selection
+            Array.from(answerSection.children).forEach(button => {
+                button.disabled = true;
+                button.classList.remove('transform', 'hover:scale-105', 'active:scale-95'); // Remove hover animation once selected
+            });
+
+            // Provide feedback based on the answer
+            if (selectedAnswer === currentQuestion.answer) {
+                score++;
+                feedback = 'correct';
+                clickedButton.classList.remove('bg-gray-100', 'border-gray-300', 'text-gray-700', 'hover:bg-gray-200', 'hover:border-blue-400');
+                clickedButton.classList.add('bg-green-100', 'border-green-500', 'text-green-700', 'shadow-md', 'animate-bounce-once');
+                feedbackSection.innerHTML = '<span class="text-green-600">Correct! 🎉</span>';
+            } else {
+                feedback = 'incorrect';
+                clickedButton.classList.remove('bg-gray-100', 'border-gray-300', 'text-gray-700', 'hover:bg-gray-200', 'hover:border-blue-400');
+                clickedButton.classList.add('bg-red-100', 'border-red-500', 'text-red-700', 'shadow-md');
+                feedbackSection.innerHTML = `<span class="text-red-600">Incorrect. The answer was: ${currentQuestion.answer} 🙁</span>`;
+
+                // Highlight the correct answer
+                Array.from(answerSection.children).forEach(button => {
+                    if (button.getAttribute('data-option') === currentQuestion.answer) {
+                        button.classList.remove('bg-gray-100', 'border-gray-300', 'text-gray-700', 'hover:bg-gray-200', 'hover:border-blue-400');
+                        button.classList.add('bg-green-100', 'border-green-500', 'text-green-700', 'shadow-md');
+                    }
+                });
+            }
+
+            feedbackSection.classList.remove('hidden');
+            nextButton.disabled = false; // Enable next button
+            nextButton.classList.remove('bg-gray-300', 'cursor-not-allowed');
+            nextButton.classList.add('bg-gradient-to-r', 'from-blue-500', 'to-indigo-600', 'hover:from-blue-600', 'hover:to-indigo-700', 'transform', 'hover:scale-105', 'transition', 'duration-300', 'ease-in-out', 'focus:outline-none', 'focus:ring-2', 'focus:ring-blue-500', 'focus:ring-opacity-75');
+            nextButton.textContent = currentQuestionIndex === quizData.length - 1 ? 'Finish Quiz' : 'Next Question';
+        }
+
+        /**
+         * Moves to the next question or displays the final score.
+         */
+        function handleNextQuestion() {
+            const nextQuestion = currentQuestionIndex + 1;
+            if (nextQuestion < quizData.length) {
+                currentQuestionIndex = nextQuestion;
+                loadQuestion();
+            } else {
+                showScore();
+            }
+        }
+
+        /**
+         * Displays the final score section.
+         */
+        function showScore() {
+            quizContent.classList.add('hidden');
+            scoreSection.classList.remove('hidden');
+            finalScoreText.textContent = `You scored ${score} out of ${quizData.length}!`;
+        }
+
+        /**
+         * Resets the quiz to its initial state and loads the first question.
+         */
+        function handleRestartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            selectedAnswer = null;
+            feedback = null;
+            scoreSection.classList.add('hidden');
+            quizContent.classList.remove('hidden');
+            loadQuestion();
+        }
+
+        // Add event listeners
+        nextButton.addEventListener('click', handleNextQuestion);
+        restartButton.addEventListener('click', handleRestartQuiz);
+
+        // Initial load of the first question when the page loads
+        document.addEventListener('DOMContentLoaded', loadQuestion);
+    </script>
+</body>
+</html>

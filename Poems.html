@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our 1st Anniversary - 12 Poems</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts Import -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+    <style>
+        /* Custom Tailwind Configuration (for colors and fonts) */
+        /* This must be defined before any Tailwind classes are used if you want to extend themes */
+        /* Note: For pure HTML, this usually needs to be done via tailwind.config.js,
+           but for a single file, we can put it in the script tag below.
+           However, direct @import for fonts and custom animations are best here. */
+
+        .font-inter {
+            font-family: 'Inter', sans-serif;
+        }
+        .font-playfair-display {
+            font-family: 'Playfair Display', serif;
+        }
+        .font-serif {
+            font-family: 'Playfair Display', serif; /* Using Playfair Display for poem text as well */
+        }
+
+        /* Custom Keyframe Animations */
+        @keyframes pulseGradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes bounceIn {
+            0% { opacity: 0; transform: scale(0.3); }
+            50% { opacity: 1; transform: scale(1.05); }
+            70% { transform: scale(0.9); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes fadeInDown {
+            0% { opacity: 0; transform: translateY(-20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            0% { opacity: 0; transform: translateY(10px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* Apply animations */
+        .animate-pulseGradient {
+            background-size: 200% 200%;
+            animation: pulseGradient 15s ease infinite;
+        }
+
+        .animate-bounceIn {
+            animation: bounceIn 1s ease-out forwards;
+        }
+
+        .animate-fadeInDown {
+            animation: fadeInDown 0.8s ease-out forwards;
+        }
+
+        .animate-fadeInUp {
+            animation: fadeInUp 0.7s ease-out forwards;
+        }
+        .animate-pulse {
+            animation: pulse 1.5s infinite ease-in-out;
+        }
+        /* Transition for poem card opacity and scale */
+        .poem-card-transition {
+            transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+        }
+        .poem-card-hidden {
+            opacity: 0;
+            transform: scale(0.95);
+        }
+        .poem-card-visible {
+            opacity: 1;
+            transform: scale(1);
+        }
+    </style>
+</head>
+<body class="font-inter">
+    <!-- Main container with a subtle, animated radial gradient background -->
+    <!-- Removed 'overflow-hidden' to allow content to expand and scroll naturally -->
+    <div id="app-container" class="relative min-h-screen bg-gradient-to-br from-purple-100 via-pink-100 to-rose-100 flex items-center justify-center p-4">
+        <!-- Background animation effect -->
+        <div id="background-animation" class="absolute inset-0 z-0 opacity-70 animate-pulseGradient"></div>
+
+        <!-- Main content wrapper, centered -->
+        <div id="content-wrapper" class="relative z-10 w-full max-w-4xl bg-white bg-opacity-90 backdrop-blur-sm rounded-3xl shadow-xl p-6 md:p-10 flex flex-col items-center">
+
+            <!-- Anniversary Title -->
+            <h1 id="main-title" class="text-4xl md:text-6xl font-extrabold text-pink-600 mb-6 text-center drop-shadow-md animate-bounceIn tracking-wider">
+                Our 1st Anniversary
+                <!-- Heart Icon (inline SVG) -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-block w-10 h-10 md:w-12 md:h-12 text-rose-500 animate-pulse scale-90">
+                    <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+                </svg>
+            </h1>
+            <p id="subtitle" class="text-xl md:text-2xl text-gray-600 mb-8 text-center italic font-semibold">
+                12 Poems for My Love
+            </p>
+
+            <!-- Poem Navigation and Display Area -->
+            <div id="poem-navigation" class="flex items-center justify-between w-full">
+                <!-- Previous Poem Button -->
+                <button id="prev-button" class="p-3 md:p-4 bg-pink-500 text-white rounded-full shadow-lg hover:bg-pink-600 transition-all duration-300 ease-in-out transform hover:scale-110 focus:outline-none focus:ring-4 focus:ring-pink-300 active:bg-pink-700 disabled:opacity-50 disabled:cursor-not-allowed" aria-label="Previous Poem">
+                    <!-- Chevron Left Icon (inline SVG) -->
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-8 h-8 md:w-10 md:h-10">
+                        <path d="m15 18-6-6 6-6"/>
+                    </svg>
+                </button>
+
+                <!-- Poem Card -->
+                <div id="poem-card" class="flex-grow mx-4 md:mx-8 bg-pink-50 rounded-2xl p-6 md:p-8 shadow-inner border border-pink-200 text-center poem-card-transition poem-card-visible">
+                    <h2 id="poem-title" class="text-3xl md:text-4xl font-bold text-pink-700 mb-4 font-playfair-display animate-fadeInDown"></h2>
+                    <div id="poem-text" class="text-gray-800 text-lg md:text-xl space-y-3"></div>
+                    <p id="poem-counter" class="mt-6 text-sm text-gray-500"></p>
+                </div>
+
+                <!-- Next Poem Button -->
+                <button id="next-button" class="p-3 md:p-4 bg-pink-500 text-white rounded-full shadow-lg hover:bg-pink-600 transition-all duration-300 ease-in-out transform hover:scale-110 focus:outline-none focus:ring-4 focus:ring-pink-300 active:bg-pink-700 disabled:opacity-50 disabled:cursor-not-allowed" aria-label="Next Poem">
+                    <!-- Chevron Right Icon (inline SVG) -->
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-8 h-8 md:w-10 md:h-10">
+                        <path d="m9 18 6-6-6-6"/>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Small footer/signature -->
+            <p id="footer-text" class="mt-10 text-md text-gray-500 text-center italic">
+                With all my love, for our first year and many more...
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Configure Tailwind to extend theme (colors for example)
+        // This script block should come BEFORE the main application script
+        tailwind.config = {
+          theme: {
+            extend: {
+              fontFamily: {
+                inter: ['Inter', 'sans-serif'],
+                'playfair-display': ['"Playfair Display"', 'serif'],
+              },
+              colors: {
+                rose: {
+                  50: '#fff1f2', 100: '#ffe4e6', 200: '#fecdd3', 300: '#fda4af', 400: '#fb7185',
+                  500: '#f43f5e', 600: '#e11d48', 700: '#be123c', 800: '#9f1239', 900: '#881337', 950: '#4c0519',
+                },
+                pink: {
+                  50: '#fdf2f8', 100: '#fce7f3', 200: '#fbcfe8', 300: '#f9a8d4', 400: '#f472b6',
+                  500: '#ec4899', 600: '#db2777', 700: '#be185d', 800: '#9d174d', 900: '#831843', 950: '#500724',
+                },
+                purple: {
+                  50: '#faf5ff', 100: '#f3e8ff', 200: '#e9d5ff', 300: '#d8b4fe', 400: '#c084fc',
+                  500: '#a855f7', 600: '#9333ea', 700: '#7e22ce', 800: '#6b21a8', 900: '#581c87', 950: '#3b0764',
+                }
+              }
+            }
+          }
+        };
+    </script>
+
+    <script>
+        // Define the array of poems.
+        // Each poem is an object with a title and an array of text lines.
+        // Replace these placeholder poems with your actual 12 poems!
+        const poems = [
+            {
+                title: "Whispers of Joy",
+                text: [
+                    "In quiet moments, soft and deep,",
+                    "The promises our spirits keep.",
+                    "A knowing glance, a tender touch,",
+                    "Meaning to me, oh, ever so much."
+                ]
+            },
+            {
+                title: "The Tapestry We Weave",
+                text: [
+                    "With threads of laughter, strong and bright,",
+                    "We weave our story, day and night.",
+                    "Through sunlit hours and gentle rain,",
+                    "Our love's sweet melody remains."
+                ]
+            },
+            {
+                title: "Shared Dreams",
+                text: [
+                    "Your dreams are now the dreams I hold,",
+                    "A future painted, brave and bold.",
+                    "Together walking, hand in hand,",
+                    "Across life's ever-changing land."
+                ]
+            },
+            {
+                title: "My Guiding Star",
+                text: [
+                    "When shadows fall or doubts arise,",
+                    "I find my solace in your eyes.",
+                    "A beacon shining, clear and true,",
+                    "My constant north, my love, is you."
+                ]
+            },
+            {
+                title: "Moments Cherished",
+                text: [
+                    "The small moments, dearly kept,",
+                    "The secrets whispered while you slept.",
+                    "Each memory, a precious gleam,",
+                    "Part of our beautiful, shared dream."
+                ]
+            },
+            {
+                title: "Your Gentle Soul",
+                text: [
+                    "Your kindness flows, a river wide,",
+                    "A gentle strength, forever my guide.",
+                    "In your embrace, I find my peace,",
+                    "Where all my worries find release."
+                ]
+            },
+            {
+                title: "Growing Stronger",
+                text: [
+                    "Like ancient oaks, our roots grow deep,",
+                    "While silent vows our spirits keep.",
+                    "Through passing seasons, come what may,",
+                    "Our love blossoms, day by day."
+                ]
+            },
+            {
+                title: "The Sound of Us",
+                text: [
+                    "Your laughter, music to my ear,",
+                    "Dispelling every single fear.",
+                    "The rhythm of our beating hearts,",
+                    "A symphony of brand new starts."
+                ]
+            },
+            {
+                title: "Forever Blooms",
+                text: [
+                    "A year of joy, a year of grace,",
+                    "Reflected in your loving face.",
+                    "And as the future starts to call,",
+                    "My love for you will conquer all."
+                ]
+            },
+            {
+                title: "Our Sacred Space",
+                text: [
+                    "In this sweet haven we have made,",
+                    "No fleeting shadows, unafraid.",
+                    "A sanctuary, pure and kind,",
+                    "Where true contentment we can find."
+                ]
+            },
+            {
+                title: "To My Only Love",
+                text: [
+                    "Twelve moons have passed, since we began,",
+                    "To walk this path, divine and grand.",
+                    "For all the years that are to be,",
+                    "My heart, my soul, belongs to thee."
+                ]
+            },
+            // Example of a longer poem
+            {
+                title: "An Ode to Our Infinite Journey",
+                text: [
+                    "A boundless sky, our love, it soars,",
+                    "Beyond the stars, and distant shores.",
+                    "Through seasons changing, soft and bold,",
+                    "A story whispered, ages old.",
+                    "Each fleeting moment, softly spun,",
+                    "A new adventure, just begun.",
+                    "Your gentle hand, a steady guide,",
+                    "Forever walking by my side.",
+                    "The quiet comfort of your gaze,",
+                    "A solace through life's winding maze.",
+                    "In every step, a shared delight,",
+                    "Bathing our world in golden light.",
+                    "No storm too grand, no path too steep,",
+                    "The promises our spirits keep.",
+                    "A fortress built of whispered dreams,",
+                    "Reflecting love in shimmering streams.",
+                    "So let us dance, as years unfold,",
+                    "A love more precious than pure gold.",
+                    "My heart, a compass, points to you,",
+                    "Forever steadfast, strong, and true."
+                ]
+            }
+        ];
+
+        let currentPoemIndex = 0; // State variable for current poem index
+
+        // Get DOM elements
+        const poemCard = document.getElementById('poem-card');
+        const poemTitle = document.getElementById('poem-title');
+        const poemTextDiv = document.getElementById('poem-text');
+        const poemCounter = document.getElementById('poem-counter');
+        const prevButton = document.getElementById('prev-button');
+        const nextButton = document.getElementById('next-button');
+
+        // Function to render the current poem
+        function renderPoem() {
+            const currentPoem = poems[currentPoemIndex];
+
+            // Start fade-out animation by adding the hidden class
+            poemCard.classList.add('poem-card-hidden');
+
+            // Wait for the fade-out animation to complete (matching CSS transition duration)
+            setTimeout(() => {
+                // Update content
+                poemTitle.textContent = currentPoem.title;
+                poemTextDiv.innerHTML = ''; // Clear previous text
+                currentPoem.text.forEach((line, index) => {
+                    const p = document.createElement('p');
+                    p.textContent = line;
+                    // Apply animation classes and delay for staggered effect
+                    p.classList.add('text-lg', 'md:text-xl', 'text-gray-700', 'leading-relaxed', 'font-serif', 'animate-fadeInUp');
+                    p.style.animationDelay = `${0.1 * index}s`;
+                    poemTextDiv.appendChild(p);
+                });
+                poemCounter.textContent = `Poem ${currentPoemIndex + 1} of ${poems.length}`;
+
+                // End fade-out and start fade-in for new content
+                poemCard.classList.remove('poem-card-hidden');
+                poemCard.classList.add('poem-card-visible'); // Ensure it transitions back to visible
+            }, 500); // This delay should match the CSS transition duration
+        }
+
+        // Function to navigate to the previous poem
+        function goToPreviousPoem() {
+            currentPoemIndex = (currentPoemIndex === 0) ? poems.length - 1 : currentPoemIndex - 1;
+            renderPoem();
+        }
+
+        // Function to navigate to the next poem
+        function goToNextPoem() {
+            currentPoemIndex = (currentPoemIndex === poems.length - 1) ? 0 : currentPoemIndex + 1;
+            renderPoem();
+        }
+
+        // Event Listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initial render of the first poem
+            renderPoem();
+
+            // Attach event listeners to buttons
+            prevButton.addEventListener('click', goToPreviousPoem);
+            nextButton.addEventListener('click', goToNextPoem);
+        });
+    </script>
+</body>
+</html>
