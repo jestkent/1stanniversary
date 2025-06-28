@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>A Special Surprise For You</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Playfair+Display:ital@400;700&display=swap" rel="stylesheet">
     <style>
         /* Base Styles */
@@ -369,45 +368,51 @@
 
             <div class="games-grid">
                 <div class="game-card">
-                    <span class="game-icon">🎯</span>
+                    <span class="game-icon">💚</span>
                     <h3>Matcha Game</h3>
-                    <p>Our special matching game filled with love and sweet memories!</p>
+                    <p>If love were a game, I’d play for you endlessly
+because winning your heart is my sweetest victory, every time.</p>
                     <button class="play-btn" onclick="playGame(event, 'matchagame.html')">Play Now</button>
                 </div>
                 <div class="game-card">
-                    <span class="game-icon">🧩</span>
+                    <span class="game-icon">💯</span>
                     <h3>Quiz</h3>
-                    <p>Another wonderful adventure waiting for us to explore together!</p>
+                    <p>Our love has faced time, distance,doubt and many more and I’d face every test again, as long as it's for you.</p>
                     <button class="play-btn" onclick="playGame(event, 'quiz.html')">Play Now</button>
                 </div>
                 <div class="game-card">
-                    <span class="game-icon">🎲</span>
+                    <span class="game-icon">🌟</span>
                     <h3>Our Journey Together</h3>
-                    <p>Fun challenges and sweet moments await in this exciting game!</p>
+                    <p>Our journey is the most beautiful I’ve known
+full of joy, laughter, tears, waiting, doubts and deep love.
+They say life is meant to be felt,
+and with you,
+I’ve felt everything that matters.</p>
                     <button class="play-btn" onclick="playGame(event, 'journey_together.html')">Play Now</button>
                 </div>
                 <div class="game-card">
-                    <span class="game-icon">🌟</span>
+                    <span class="game-icon">✒️</span>
                     <h3>Poems</h3>
-                    <p>Magical gameplay designed to bring smiles and joy to your day!</p>
+                    <p>Poems become the language of my heart. I write you verses in quiet moments, when the world is still, and my thoughts are full of you.</p>
                     <button class="play-btn" onclick="playGame(event, 'Poems.html')">Play Now</button>
                 </div>
                 <div class="game-card">
-                    <span class="game-icon">💝</span>
+                    <span class="game-icon">🍿</span>
                     <h3>Movie</h3>
-                    <p>The ultimate love-filled gaming experience crafted just for you!</p>
+                    <p>Our love story may not be a movie, but it’s the greatest story I’ve ever known</p>
                     <button class="play-btn" onclick="playGame(event, 'movie.html')">Play Now</button>
                 </div>
                 <div class="game-card">
                     <span class="game-icon">💌</span>
                     <h3>Love Letter</h3>
-                    <p>I know you love letters, so I created this for you.!</p>
+                    <p>You love letters, and I love you,
+so here’s a piece of my heart, written just for you</p>
                     <button class="play-btn" onclick="playGame(event, 'letter.html')">Play Now</button>
                 </div>
             </div>
 
             <footer class="footer">
-                <p>Made with endless love and lots of code 💛✨</p>
+                <p>Made with endless love 💛✨</p>
             </footer>
         </div>
     </div>
@@ -497,29 +502,9 @@
                     document.addEventListener('click', playOnUserAction);
                 });
             }
-
-            // Auto-start music
-            setTimeout(() => {
-                // Ensure Tone.js context is started
-                Tone.start();
-                const synth = new Tone.PolySynth(Tone.Synth, {
-                    oscillator: { type: "fatsine" },
-                    envelope: { attack: 0.5, decay: 0.1, sustain: 0.3, release: 1 }
-                }).toDestination();
-                synth.volume.value = -12;
-                const melody = new Tone.Sequence((time, note) => {
-                    synth.triggerAttackRelease(note, "8n", time);
-                }, ["C4", "E4", "G4", "C5", "E5", "G4", "E4", "C4"], "4n");
-                melody.loop = true;
-                Tone.Transport.start();
-                melody.start(0);
-            }, 500);
         }
 
         function playGame(event, gameFile) {
-            // Start the music on the first interaction, which is more reliable
-            Tone.start(); 
-
             const btn = event.target;
             btn.innerHTML = 'Loading...';
             btn.disabled = true; // Disable the button to prevent multiple clicks

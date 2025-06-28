@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>A Letter For You</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Playfair+Display:ital@400;700&display=swap" rel="stylesheet">
     <style>
         body {
@@ -157,12 +156,16 @@
         <!-- The letter content is moved here by JS -->
     </div>
 
+    <!-- Add this audio element for background music -->
+    <audio id="bg-music" src="DilawMakiFingerstyleGuitar.mp3" loop></audio>
+
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const envelope = document.getElementById('envelope');
             const envelopeWrapper = document.getElementById('envelopeWrapper');
             const letter = document.getElementById('letter');
             const letterContainer = document.getElementById('letterContainer');
+            const bgMusic = document.getElementById('bg-music');
 
             // Move the letter out of the envelope DOM structure for reveal
             letterContainer.appendChild(letter);
@@ -187,29 +190,18 @@
                 // Fade in the letter
                 letterContainer.style.opacity = '1';
 
-                // --- Play Music on Open ---
-                if (!musicStarted) {
+                // --- Play Calming Background Music on Open ---
+                if (!musicStarted && bgMusic) {
                     musicStarted = true;
-                    // Start the audio context (required by browsers)
-                    Tone.start();
-
-                    // Create a synthesizer with a soft, warm tone
-                    const synth = new Tone.PolySynth(Tone.Synth, {
-                        oscillator: { type: "fatsine" },
-                        envelope: { attack: 0.5, decay: 0.1, sustain: 0.3, release: 1 }
-                    }).toDestination();
-                    
-                    // Set volume to a gentle background level
-                    synth.volume.value = -12;
-
-                    // A simple, sweet, looping melody
-                    const melody = new Tone.Sequence((time, note) => {
-                        synth.triggerAttackRelease(note, "8n", time);
-                    }, ["C4", "E4", "G4", "C5", "E5", "G4", "E4", "C4"], "4n");
-                    
-                    melody.loop = true; // Make the melody loop indefinitely
-                    Tone.Transport.start(); // Start the master clock
-                    melody.start(0); // Start the sequence
+                    bgMusic.volume = 0.5;
+                    bgMusic.play().catch(() => {
+                        // If autoplay fails, play on first user interaction
+                        const playOnUserAction = () => {
+                            bgMusic.play();
+                            document.removeEventListener('click', playOnUserAction);
+                        };
+                        document.addEventListener('click', playOnUserAction);
+                    });
                 }
             });
         });
