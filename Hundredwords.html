@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Para sa Aking Mahal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Inter:wght@300;400&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            overflow: hidden; /* Prevents scrollbars from the animation */
+        }
+        .font-playfair {
+            font-family: 'Playfair Display', serif;
+        }
+
+        /* Container for the floating hearts */
+        .hearts-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Individual heart style */
+        .heart {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: #ff7e9f; /* A soft pink color */
+            opacity: 0;
+            animation: floatUp 10s infinite linear;
+        }
+
+        .heart::before,
+        .heart::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: #ff7e9f;
+            border-radius: 50%;
+        }
+
+        .heart::before {
+            top: -10px;
+            left: 0;
+        }
+
+        .heart::after {
+            top: 0;
+            left: -10px;
+        }
+        
+        /* Keyframe animation for floating effect */
+        @keyframes floatUp {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(-10vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-rose-50 to-purple-100">
+    <div class="hearts-container" id="hearts-container"></div>
+
+    <main class="relative z-10 flex items-center justify-center min-h-screen p-4">
+        <div class="bg-white/80 backdrop-blur-sm p-8 md:p-12 rounded-3xl shadow-2xl max-w-3xl w-full text-center transform transition-all duration-500 hover:scale-105">
+            <h1 class="font-playfair text-4xl md:text-5xl font-bold text-gray-800 mb-2">Para sa Aking Mahal,</h1>
+            <p class="text-gray-600 text-lg md:text-xl mb-6">Happy Anniversary! Narito ang mga salita para sa'yo:</p>
+            <div class="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-7 gap-x-4 gap-y-2 text-gray-700">
+                <span>Mahal</span> <span>Ganda</span> <span>Sinta</span> <span>Irog</span>
+                <span>Buhay</span> <span>Tangi</span> <span>Yakap</span> <span>Ngiti</span>
+                <span>Tamis</span> <span>Ligaya</span> <span>Puso</span> <span>Bituin</span>
+                <span>Araw</span> <span>Giliw</span> <span>Hirang</span> <span>Mabait</span>
+                <span>Matamis</span> <span>Kaakit-akit</span> <span>Marikit</span> <span>Maganda</span>
+                <span>Mapagmahal</span> <span>Maalaga</span> <span>Matapat</span> <span>Totoo</span>
+                <span>Liwanag</span> <span>Pangarap</span> <span>Hiyas</span> <span>Perlas</span>
+                <span>Tala</span> <span>Diwata</span> <span>Reyna</span> <span>Prinsesa</span>
+                <span>Anghel</span> <span>Langit</span> <span>Musika</span> <span>Tula</span>
+                <span>Kislap</span> <span>Halik</span> <span>Aliw</span> <span>Sigla</span>
+                <span>Inspirasyon</span> <span>Yaman</span> <span>Biyaya</span> <span>Pag-asa</span>
+                <span>Matatag</span> <span>Matulungin</span> <span>Maunawain</span> <span>Masayahin</span>
+                <span>Nakakatuwa</span> <span>Espesyal</span> <span>Pambihira</span> <span>Dilaw</span>
+                <span>Sapat</span> <span>Malakas</span> <span>Sweet</span> <span>Karapat-dapat</span>
+                <span>Pinagpala</span> <span>Minamahal</span> <span>Iniibig</span> <span>Malambing</span>
+                <span>Hinahangaan</span> <span>Kaibigan</span> <span>Kasama</span> <span>Karamay</span>
+                <span>Sandalan</span> <span>Gabay</span> <span>Tahanan</span> <span>Mundo</span>
+                <span>Bulaklak</span> <span>Magaling</span> <span>Mabango</span> <span>Matalino</span>
+                <span>Matipid</span> <span>Masayahin</span> <span>Magaling sa pera</span> <span>Umaga</span>
+                <span>Masarap</span> <span>Ma-alaga</span> <span>Pag-ibig</span> <span>Wagas</span>
+                <span>Tapat</span> <span>Dalisay</span> <span>Payapa</span> <span>Kalma</span>
+                <span>Natatangi</span> <span>Ikaw-lamang</span>
+            </div>
+            <div class="mt-8">
+                <span class="font-playfair text-2xl text-pink-500">Magpakailanman,</span><br>
+                <span class="text-xl text-gray-700">Ang Iyong Nagmamahal</span>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // JavaScript to generate floating hearts
+        document.addEventListener('DOMContentLoaded', () => {
+            const container = document.getElementById('hearts-container');
+            const numberOfHearts = 30; // Adjust number of hearts
+
+            for (let i = 0; i < numberOfHearts; i++) {
+                const heart = document.createElement('div');
+                heart.classList.add('heart');
+                
+                // Randomize position, size, and animation
+                heart.style.left = `${Math.random() * 100}vw`;
+                const size = Math.random() * 20 + 10; // size between 10px and 30px
+                heart.style.width = `${size}px`;
+                heart.style.height = `${size}px`;
+                heart.style.animationDuration = `${Math.random() * 5 + 8}s`; // duration between 8s and 13s
+                heart.style.animationDelay = `${Math.random() * 5}s`;
+                heart.style.opacity = Math.random() * 0.5 + 0.2; // random opacity
+                
+                // Adjust pseudo-elements for new size
+                const before = document.createElement('div');
+                before.style.top = `-${size / 2}px`;
+                before.style.left = `0`;
+                
+                const after = document.createElement('div');
+                after.style.top = `0`;
+                after.style.left = `-${size / 2}px`;
+
+                heart.appendChild(before);
+                heart.appendChild(after);
+
+
+                container.appendChild(heart);
+            }
+        });
+    </script>
+</body>
+</html>
+```
+
+I've replaced the English words with a collection of sweet and meaningful Tagalog words and updated the headings to match. The beautiful design and floating heart animations are all still there.
+
+I hope she loves this personal tou
